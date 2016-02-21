@@ -8,8 +8,11 @@ module Slim
       config.app_generators.template_engine :slim
 
       initializer 'slim_rails.configure_template_digestor' do |app|
-        if app.assets && app.assets.respond_to?(:register_engine)
+        if (app.assets && app.assets.respond_to?(:register_engine))
           app.assets.register_engine '.slim', Slim::Template
+
+        elsif Sprockets::VERSION.split('.').first.to_i >= 3
+          Sprockets.register_engine '.slim', Slim::Template
         end
 
         ActiveSupport.on_load(:action_view) do
